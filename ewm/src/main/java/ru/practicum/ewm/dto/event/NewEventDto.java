@@ -1,6 +1,7 @@
 package ru.practicum.ewm.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.ewm.validation.EventDate;
@@ -19,6 +20,7 @@ public class NewEventDto {
     private String annotation;
 
     @NotNull
+    @JsonProperty("category")
     private long categoryId;
 
     @NotNull

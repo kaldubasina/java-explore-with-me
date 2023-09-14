@@ -1,6 +1,7 @@
 package ru.practicum.ewm.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import ru.practicum.ewm.dto.event.*;
@@ -13,8 +14,10 @@ import ru.practicum.ewm.model.Event;
 public interface EventMapper {
     Event toEntity(NewEventDto eventDto);
 
+    @Mapping(source = "eventDto.stateAction", target = "stateActionAdmin")
     Event toEntity(UpdateEventAdminRequest eventDto);
 
+    @Mapping(source = "eventDto.stateAction", target = "stateActionUser")
     Event toEntity(UpdateEventUserRequest eventDto);
 
     EventFullDto toFullDto(Event event);

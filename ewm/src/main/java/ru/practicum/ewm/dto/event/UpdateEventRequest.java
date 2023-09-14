@@ -1,6 +1,7 @@
 package ru.practicum.ewm.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.ewm.validation.EventDate;
@@ -14,6 +15,7 @@ import static ru.practicum.stats.common.utils.Constant.DATE_TIME_FORMAT;
 abstract class UpdateEventRequest {
     @Length(min = 20, max = 2000)
     private String annotation;
+    @JsonProperty("category")
     private Long categoryId;
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     @EventDate
