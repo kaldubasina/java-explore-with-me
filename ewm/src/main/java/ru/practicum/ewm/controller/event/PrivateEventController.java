@@ -35,8 +35,8 @@ public class PrivateEventController {
 
     @GetMapping
     public Collection<EventShortDto> getOwn(@PathVariable @Positive Long userId,
-                                            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                            @RequestParam(defaultValue = "10") @Positive int size) {
+                                            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                            @RequestParam(defaultValue = "10") @Positive Integer size) {
         return service.getByUser(userId, from, size).stream()
                 .map(eventMapper::toShortDto)
                 .collect(Collectors.toList());

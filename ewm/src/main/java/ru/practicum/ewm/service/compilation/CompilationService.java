@@ -7,11 +7,11 @@ import java.util.List;
 public interface CompilationService {
     Compilation add(Compilation compilation, List<Long> eventIds);
 
-    Compilation update(Compilation compilation, List<Long> eventIds, long compId);
+    Compilation update(Compilation compilation, List<Long> eventIds, Long compId);
 
-    void delete(long compId);
+    void delete(Long compId);
 
-    List<Compilation> getAll(boolean pinned, int from, int size);
+    List<Compilation> getAll(Boolean pinned, Integer from, Integer size);
 
-    Compilation getById(long compId);
+    Compilation getById(Long compId);
 }

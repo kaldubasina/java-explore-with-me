@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getByIds(Set<Long> ids, int from, int size) {
+    public List<User> getByIds(Set<Long> ids, Integer from, Integer size) {
         Pageable page = PageRequest.of(from / size, size);
         if (ids == null || ids.isEmpty()) {
             return repository.findAll(page).getContent();
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void delete(long userId) {
+    public void delete(Long userId) {
         if (!repository.existsById(userId)) {
             throw new NotFoundException(String.format("User with id %d not found", userId));
         }

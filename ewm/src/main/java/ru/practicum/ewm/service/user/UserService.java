@@ -8,7 +8,7 @@ import java.util.Set;
 public interface UserService {
     User add(User user);
 
-    List<User> getByIds(Set<Long> ids, int from, int size);
+    List<User> getByIds(Set<Long> ids, Integer from, Integer size);
 
-    void delete(long userId);
+    void delete(Long userId);
 }

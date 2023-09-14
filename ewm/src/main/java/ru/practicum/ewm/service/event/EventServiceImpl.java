@@ -61,7 +61,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getAllAdmin(Set<Long> users, Set<State> states, Set<Long> categories,
                                    LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                   int from, int size) {
+                                   Integer from, Integer size) {
          List<Event> events = eventRepository.findAllByAdmin(users, states, categories,
                 rangeStart, rangeEnd, PageRequest.of(from / size, size));
          setToEventsConfirmedRequestsAndViews(events);
@@ -70,7 +70,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transient
-    public Event updateAdmin(long eventId, Event event) {
+    public Event updateAdmin(Long eventId, Event event) {
         Event eventForUpd = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id %d not found", eventId)));
 
@@ -97,7 +97,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getByUser(long userId, int from, int size) {
+    public List<Event> getByUser(Long userId, Integer from, Integer size) {
         checkUser(userId);
         List<Event> events = eventRepository.findByInitiatorId(userId, PageRequest.of(from / size, size));
         setToEventsConfirmedRequestsAndViews(events);
@@ -106,7 +106,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event add(long userId, Event event) {
+    public Event add(Long userId, Event event) {
         User initiator = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id %d not found", userId)));
         Category category = categoryRepository.findById(event.getCategoryId()).orElseThrow(() ->
@@ -119,7 +119,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getByIdPrivate(long userId, long eventId) {
+    public Event getByIdPrivate(Long userId, Long eventId) {
         checkUser(userId);
         List<Event> eventList = List.of(eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id %d not found", eventId))));
@@ -131,7 +131,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event updatePrivate(long userId, long eventId, Event event) {
+    public Event updatePrivate(Long userId, Long eventId, Event event) {
         checkUser(userId);
         Event eventForUpd = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id %d not found", eventId)));
@@ -154,7 +154,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Request> getRequestByEvent(long userId, long eventId) {
+    public List<Request> getRequestByEvent(Long userId, Long eventId) {
         checkUser(userId);
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id %d not found", eventId)));
@@ -165,8 +165,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Map<String, List<Request>> eventRequestsStatusUpdate(long userId,
-                                                                long eventId,
+    public Map<String, List<Request>> eventRequestsStatusUpdate(Long userId, Long eventId,
                                                                 EventRequestStatusUpdateRequest updateRequest) {
         checkUser(userId);
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
@@ -219,7 +218,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getAllPublic(String text, Set<Long> categories, Boolean paid,
                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                    boolean onlyAvailable, EventSort eventSort, int from, int size,
+                                    boolean onlyAvailable, EventSort eventSort, Integer from, Integer size,
                                     HttpServletRequest request) {
         if (rangeStart == null) {
             rangeStart = LocalDateTime.now();
@@ -248,7 +247,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getByIdPublic(long eventId, HttpServletRequest request) {
+    public Event getByIdPublic(Long eventId, HttpServletRequest request) {
         List<Event> eventList = List.of(eventRepository.findByIdAndState(eventId, State.PUBLISHED).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id %d not found", eventId))));
 

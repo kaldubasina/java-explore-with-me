@@ -52,7 +52,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public Compilation update(Compilation compilation, List<Long> eventIds, long compId) {
+    public Compilation update(Compilation compilation, List<Long> eventIds, Long compId) {
         Compilation compForUpd = compilationRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException(String.format("Compilation with id %d not found", compId)));
         if (!compilation.getTitle().equals(compForUpd.getTitle())) compForUpd.setTitle(compilation.getTitle());
@@ -71,7 +71,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public void delete(long compId) {
+    public void delete(Long compId) {
         if (!compilationRepository.existsById(compId)) {
             throw new NotFoundException(String.format("Compilation with id %d not found", compId));
         }
@@ -79,7 +79,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public List<Compilation> getAll(boolean pinned, int from, int size) {
+    public List<Compilation> getAll(Boolean pinned, Integer from, Integer size) {
         List<Compilation> compilations = compilationRepository.findAllByPinned(
                 pinned, PageRequest.of(from / size, size));
 
@@ -94,7 +94,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public Compilation getById(long compId) {
+    public Compilation getById(Long compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException(String.format("Compilation with id %d not found", compId)));
 

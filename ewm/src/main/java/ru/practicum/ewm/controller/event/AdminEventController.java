@@ -35,8 +35,8 @@ public class AdminEventController {
             @RequestParam(required = false) Set<Long> categories,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) LocalDateTime rangeEnd,
-            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(defaultValue = "10") @Positive int size) {
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size) {
         return service.getAllAdmin(users, states, categories, rangeStart, rangeEnd, from, size).stream()
                 .map(mapper::toFullDto)
                 .collect(Collectors.toList());

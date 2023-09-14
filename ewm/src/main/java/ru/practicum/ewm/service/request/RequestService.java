@@ -5,9 +5,9 @@ import ru.practicum.ewm.model.Request;
 import java.util.List;
 
 public interface RequestService {
-    Request add(long userId, long eventId);
+    Request add(Long userId, Long eventId);
 
-    List<Request> getRequests(long userId);
+    List<Request> getRequests(Long userId);
 
-    Request cancelRequest(long userId, long requestId);
+    Request cancelRequest(Long userId, Long requestId);
 }

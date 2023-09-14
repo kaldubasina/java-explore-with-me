@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category update(Category category, long catId) {
+    public Category update(Category category, Long catId) {
         Category catForUpd = categoryRepository.findById(catId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id %d not found", catId)));
         if (categoryRepository.existsByName(category.getName())) {
@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void delete(long catId) {
+    public void delete(Long catId) {
         if (!categoryRepository.existsById(catId)) {
             throw new NotFoundException(String.format("Category with id %d not found", catId));
         }
@@ -58,12 +58,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAll(int from, int size) {
+    public List<Category> getAll(Integer from, Integer size) {
         return categoryRepository.findAll(PageRequest.of(from / size, size)).getContent();
     }
 
     @Override
-    public Category getById(long catId) {
+    public Category getById(Long catId) {
         return categoryRepository.findById(catId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id %d not found", catId)));
     }

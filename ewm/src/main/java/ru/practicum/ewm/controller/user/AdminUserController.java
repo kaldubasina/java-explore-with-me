@@ -32,8 +32,8 @@ public class AdminUserController {
 
     @GetMapping
     public Collection<UserDto> getByIds(@RequestParam(required = false) Set<Long> ids,
-                                      @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                      @RequestParam(defaultValue = "10") @Positive int size) {
+                                      @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                      @RequestParam(defaultValue = "10") @Positive Integer size) {
         return service.getByIds(ids, from, size).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());

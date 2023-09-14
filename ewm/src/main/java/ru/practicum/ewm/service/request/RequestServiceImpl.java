@@ -32,7 +32,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public Request add(long userId, long eventId) {
+    public Request add(Long userId, Long eventId) {
         User requester = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id %d not found", userId)));
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
@@ -62,7 +62,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<Request> getRequests(long userId) {
+    public List<Request> getRequests(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException(String.format("User with id %d not found", userId));
         }
@@ -71,7 +71,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public Request cancelRequest(long userId, long requestId) {
+    public Request cancelRequest(Long userId, Long requestId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException(String.format("User with id %d not found", userId));
         }

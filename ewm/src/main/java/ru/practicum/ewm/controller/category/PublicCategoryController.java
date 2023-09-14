@@ -21,8 +21,8 @@ public class PublicCategoryController {
     private final CategoryMapper mapper;
 
     @GetMapping
-    public Collection<CategoryDto> getAll(@RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                          @RequestParam(defaultValue = "10") @Positive int size) {
+    public Collection<CategoryDto> getAll(@RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                          @RequestParam(defaultValue = "10") @Positive Integer size) {
         return service.getAll(from, size).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());

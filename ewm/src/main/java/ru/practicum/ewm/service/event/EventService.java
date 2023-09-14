@@ -21,34 +21,35 @@ public interface EventService {
                             Set<Long> categories,
                             LocalDateTime rangeStart,
                             LocalDateTime rangeEnd,
-                            int from, int size);
+                            Integer from, Integer size);
 
-    Event updateAdmin(long eventId, Event event);
+    Event updateAdmin(Long eventId, Event event);
 
     /**
      * public methods
      */
     List<Event> getAllPublic(String text, Set<Long> categories, Boolean paid,
                              LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                             boolean onlyAvailable, EventSort eventSort, int from, int size,
+                             boolean onlyAvailable, EventSort eventSort,
+                             Integer from, Integer size,
                              HttpServletRequest request);
 
-    Event getByIdPublic(long eventId, HttpServletRequest request);
+    Event getByIdPublic(Long eventId, HttpServletRequest request);
 
     /**
      * private methods
      */
-    List<Event> getByUser(long userId, int from, int size);
+    List<Event> getByUser(Long userId, Integer from, Integer size);
 
-    Event add(long userId, Event event);
+    Event add(Long userId, Event event);
 
-    Event getByIdPrivate(long userId, long eventId);
+    Event getByIdPrivate(Long userId, Long eventId);
 
-    Event updatePrivate(long userId, long eventId, Event event);
+    Event updatePrivate(Long userId, Long eventId, Event event);
 
-    List<Request> getRequestByEvent(long userId, long eventId);
+    List<Request> getRequestByEvent(Long userId, Long eventId);
 
-    Map<String, List<Request>> eventRequestsStatusUpdate(long userId, long eventId,
+    Map<String, List<Request>> eventRequestsStatusUpdate(Long userId, Long eventId,
                                                          EventRequestStatusUpdateRequest updateRequest);
 
 }

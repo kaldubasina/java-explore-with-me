@@ -22,8 +22,8 @@ public class PublicCompilationController {
 
     @GetMapping
     public Collection<CompilationDto> getAll(@RequestParam(defaultValue = "false") boolean pinned,
-                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                             @RequestParam(defaultValue = "10") @Positive int size) {
+                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
         return service.getAll(pinned, from, size).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
