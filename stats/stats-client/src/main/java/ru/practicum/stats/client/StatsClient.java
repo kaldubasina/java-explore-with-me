@@ -8,7 +8,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.stats.common.dto.ViewStats;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +29,7 @@ public class StatsClient extends BaseClient {
         return post("/hit", endpointHit);
     }
 
-    public ResponseEntity<Object> getStats(String start, String end, Set<String> uris, boolean unique) {
+    public List<ViewStats> getStats(String start, String end, Set<String> uris, boolean unique) {
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,

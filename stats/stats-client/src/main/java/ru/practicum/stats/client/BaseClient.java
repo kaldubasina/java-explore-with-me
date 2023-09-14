@@ -4,9 +4,9 @@ import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import ru.practicum.stats.common.dto.ViewStats;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BaseClient {
     protected final RestTemplate rest;
@@ -15,12 +15,23 @@ public class BaseClient {
         this.rest = rest;
     }
 
-    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
+    protected List<ViewStats> get(String path, Map<String, Object> parameters) {
+        ViewStats[] statsServerResponse = rest.getForObject(path, ViewStats[].class, parameters);
+        return Objects.isNull(statsServerResponse)
+                ? List.of()
+                : List.of(statsServerResponse);
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
-        return makeAndSendRequest(HttpMethod.POST, path, null, body);
+        HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
+
+        ResponseEntity<Object> statsServerResponse;
+        try {
+            statsServerResponse = rest.exchange(path, HttpMethod.POST, requestEntity, Object.class);
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
+        }
+        return prepareGatewayResponse(statsServerResponse);
     }
 
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method,

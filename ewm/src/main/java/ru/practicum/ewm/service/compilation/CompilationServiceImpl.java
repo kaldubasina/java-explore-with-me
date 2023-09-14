@@ -41,9 +41,11 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public Compilation add(Compilation compilation, List<Long> eventIds) {
-        Set<Event> events = new HashSet<>(eventRepository.findAllByIdIn(eventIds));
-        setToEventsConfirmedRequestsAndViews(events);
-        compilation.setEvents(events);
+        if (!eventIds.isEmpty()) {
+            Set<Event> events = new HashSet<>(eventRepository.findAllByIdIn(eventIds));
+            setToEventsConfirmedRequestsAndViews(events);
+            compilation.setEvents(events);
+        }
 
         return compilationRepository.save(compilation);
     }
@@ -57,8 +59,11 @@ public class CompilationServiceImpl implements CompilationService {
 
         if (compilation.getPinned() != null) compForUpd.setPinned(compilation.getPinned());
 
-        Set<Event> events = new HashSet<>(eventRepository.findAllById(eventIds));
-        setToEventsConfirmedRequestsAndViews(events);
+        Set<Event> events = new HashSet<>();
+        if (!eventIds.isEmpty()) {
+            events.addAll(eventRepository.findAllById(eventIds));
+            setToEventsConfirmedRequestsAndViews(events);
+        }
         compForUpd.setEvents(events);
 
         return compilationRepository.save(compForUpd);
@@ -80,8 +85,10 @@ public class CompilationServiceImpl implements CompilationService {
 
         for (Compilation compilation : compilations) {
             Set<Event> events = compilation.getEvents();
-            setToEventsConfirmedRequestsAndViews(events);
-            compilation.setEvents(events);
+            if (!events.isEmpty()) {
+                setToEventsConfirmedRequestsAndViews(events);
+                compilation.setEvents(events);
+            }
         }
         return compilations;
     }
@@ -92,8 +99,10 @@ public class CompilationServiceImpl implements CompilationService {
                 new NotFoundException(String.format("Compilation with id %d not found", compId)));
 
         Set<Event> events = compilation.getEvents();
-        setToEventsConfirmedRequestsAndViews(events);
-        compilation.setEvents(events);
+        if (!events.isEmpty()) {
+            setToEventsConfirmedRequestsAndViews(events);
+            compilation.setEvents(events);
+        }
 
         return compilation;
     }
@@ -107,7 +116,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .map(id -> "/event/" + id)
                 .collect(Collectors.toSet());
 
-        List<ViewStats> stats = (List<ViewStats>) statsClient.getStats(start, end, uris, false).getBody();
+        List<ViewStats> stats = statsClient.getStats(start, end, uris, false);//.getBody();
         Map<Long, Long> viewsById = new HashMap<>();
         if (stats != null) {
             for (ViewStats stat : stats) {

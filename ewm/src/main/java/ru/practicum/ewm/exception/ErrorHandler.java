@@ -1,6 +1,7 @@
 package ru.practicum.ewm.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -34,7 +35,9 @@ public class ErrorHandler {
         return createErrorResponse(ex, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({AlreadyExistException.class, NotAvailableException.class})
+    @ExceptionHandler({AlreadyExistException.class,
+            NotAvailableException.class,
+            DataIntegrityViolationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConflictExceptions(final RuntimeException ex) {
         log.debug("Получен статус 409 Conflict {}", ex.getMessage(), ex);

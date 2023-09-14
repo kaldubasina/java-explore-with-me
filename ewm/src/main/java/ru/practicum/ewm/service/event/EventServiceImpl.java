@@ -309,6 +309,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private void setToEventsConfirmedRequestsAndViews(List<Event> events) {
+        if (events.isEmpty()) return;
         LocalDateTime earliestEvent = events.stream()
                 .map(Event::getPublishedOn)
                 .min(LocalDateTime::compareTo)
@@ -321,7 +322,7 @@ public class EventServiceImpl implements EventService {
                 .map(id -> "/event/" + id)
                 .collect(Collectors.toSet());
 
-        List<ViewStats> stats = (List<ViewStats>) statsClient.getStats(start, end, uris, false).getBody();
+        List<ViewStats> stats = statsClient.getStats(start, end, uris, false);
         Map<Long, Long> viewsById = new HashMap<>();
         if (stats != null) {
             for (ViewStats stat : stats) {
