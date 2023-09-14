@@ -9,5 +9,5 @@ import ru.practicum.stats.server.model.Stats;
 public interface StatsMapper {
     StatsMapper INSTANCE = Mappers.getMapper(StatsMapper.class);
 
-    Stats fromDto(EndpointHit endpointHit);
+    Stats toEntity(EndpointHit endpointHit);
 }
