@@ -34,7 +34,7 @@ public class PrivateEventController {
     private final RequestMapper requestMapper;
 
     @GetMapping
-    public Collection<EventShortDto> getOwn(@PathVariable @Positive long userId,
+    public Collection<EventShortDto> getOwn(@PathVariable @Positive Long userId,
                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                             @RequestParam(defaultValue = "10") @Positive int size) {
         return service.getByUser(userId, from, size).stream()
@@ -44,26 +44,26 @@ public class PrivateEventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto add(@PathVariable @Positive long userId, @RequestBody @Valid NewEventDto eventDto) {
+    public EventFullDto add(@PathVariable @Positive Long userId, @RequestBody @Valid NewEventDto eventDto) {
         return eventMapper.toFullDto(service.add(userId, eventMapper.toEntity(eventDto)));
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getById(@PathVariable @Positive long userId,
-                                @PathVariable @Positive long eventId) {
+    public EventFullDto getById(@PathVariable @Positive Long userId,
+                                @PathVariable @Positive Long eventId) {
         return eventMapper.toFullDto(service.getByIdPrivate(userId, eventId));
     }
 
     @PatchMapping("/{eventId}")
-    public EventFullDto update(@PathVariable @Positive long userId,
-                               @PathVariable @Positive long eventId,
+    public EventFullDto update(@PathVariable @Positive Long userId,
+                               @PathVariable @Positive Long eventId,
                                @RequestBody @Valid UpdateEventUserRequest eventRequest) {
         return eventMapper.toFullDto(service.updatePrivate(userId, eventId, eventMapper.toEntity(eventRequest)));
     }
 
     @GetMapping("/{eventId}/requests")
-    public Collection<ParticipationRequestDto> getRequestByEvent(@PathVariable @Positive long userId,
-                                                                 @PathVariable @Positive long eventId) {
+    public Collection<ParticipationRequestDto> getRequestByEvent(@PathVariable @Positive Long userId,
+                                                                 @PathVariable @Positive Long eventId) {
         return service.getRequestByEvent(userId, eventId).stream()
                 .map(requestMapper::toDto)
                 .collect(Collectors.toList());
@@ -71,8 +71,8 @@ public class PrivateEventController {
 
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult eventRequestsStatusUpdate(
-            @PathVariable @Positive long userId,
-            @PathVariable @Positive long eventId,
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
             @RequestBody @Valid EventRequestStatusUpdateRequest updateRequest) {
         Map<String, List<Request>> result = service.eventRequestsStatusUpdate(userId, eventId, updateRequest);
 

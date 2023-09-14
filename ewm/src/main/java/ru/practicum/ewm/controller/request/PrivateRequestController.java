@@ -21,7 +21,7 @@ public class PrivateRequestController {
     private final RequestMapper mapper;
 
     @GetMapping
-    public Collection<ParticipationRequestDto> getRequests(@PathVariable @Positive long userId) {
+    public Collection<ParticipationRequestDto> getRequests(@PathVariable @Positive Long userId) {
         return service.getRequests(userId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
@@ -29,14 +29,14 @@ public class PrivateRequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto add(@PathVariable @Positive long userId,
-                                       @RequestParam @Positive long eventId) {
+    public ParticipationRequestDto add(@PathVariable @Positive Long userId,
+                                       @RequestParam @Positive Long eventId) {
         return mapper.toDto(service.add(userId, eventId));
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public ParticipationRequestDto cancelRequest(@PathVariable @Positive long userId,
-                                                 @PathVariable @Positive long requestId) {
+    public ParticipationRequestDto cancelRequest(@PathVariable @Positive Long userId,
+                                                 @PathVariable @Positive Long requestId) {
         return mapper.toDto(service.cancelRequest(userId, requestId));
     }
 }

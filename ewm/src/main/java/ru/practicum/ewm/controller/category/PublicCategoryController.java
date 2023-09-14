@@ -29,7 +29,7 @@ public class PublicCategoryController {
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto getById(@PathVariable @Positive long catId) {
+    public CategoryDto getById(@PathVariable @Positive Long catId) {
         return mapper.toDto(service.getById(catId));
     }
 }

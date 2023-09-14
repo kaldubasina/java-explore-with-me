@@ -29,7 +29,7 @@ public class AdminCompilationController {
 
     @PatchMapping("/{compId}")
     public CompilationDto update(@RequestBody @Valid UpdateCompilationRequest compilationRequest,
-                                 @PathVariable @Positive long compId) {
+                                 @PathVariable @Positive Long compId) {
         return mapper.toDto(service.update(mapper.toEntity(compilationRequest),
                 compilationRequest.getEventIds(),
                 compId));
@@ -37,7 +37,7 @@ public class AdminCompilationController {
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive long compId) {
+    public void delete(@PathVariable @Positive Long compId) {
         service.delete(compId);
     }
 }

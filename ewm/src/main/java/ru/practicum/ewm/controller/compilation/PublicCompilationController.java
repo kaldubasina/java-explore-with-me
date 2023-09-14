@@ -30,7 +30,7 @@ public class PublicCompilationController {
     }
 
     @GetMapping("/{compId}")
-    public CompilationDto getById(@PathVariable @Positive long compId) {
+    public CompilationDto getById(@PathVariable @Positive Long compId) {
         return mapper.toDto(service.getById(compId));
     }
 }

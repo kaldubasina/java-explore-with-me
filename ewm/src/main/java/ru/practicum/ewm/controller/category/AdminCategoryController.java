@@ -27,13 +27,13 @@ public class AdminCategoryController {
     }
 
     @PatchMapping("/{catId}")
-    public CategoryDto update(@RequestBody @Valid CategoryDto categoryDto, @PathVariable @Positive long catId) {
+    public CategoryDto update(@RequestBody @Valid CategoryDto categoryDto, @PathVariable @Positive Long catId) {
         return mapper.toDto(service.update(mapper.toEntity(categoryDto), catId));
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive long catId) {
+    public void delete(@PathVariable @Positive Long catId) {
         service.delete(catId);
     }
 }
