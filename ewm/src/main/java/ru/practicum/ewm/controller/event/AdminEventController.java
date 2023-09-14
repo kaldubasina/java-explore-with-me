@@ -2,6 +2,7 @@ package ru.practicum.ewm.controller.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.event.EventFullDto;
 import ru.practicum.ewm.dto.event.UpdateEventAdminRequest;
@@ -22,6 +23,7 @@ import static ru.practicum.ewm.utils.Constant.DATE_TIME_FORMAT;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/events")
+@Validated
 public class AdminEventController {
     private final EventService service;
     private final EventMapper mapper;
@@ -41,7 +43,7 @@ public class AdminEventController {
     }
 
     @PatchMapping("/{eventId}")
-    public EventFullDto update(@PathVariable long eventId,
+    public EventFullDto update(@PathVariable @Positive long eventId,
                                @RequestBody @Valid UpdateEventAdminRequest eventRequest) {
         return mapper.toFullDto(service.updateAdmin(eventId, mapper.toEntity(eventRequest)));
     }

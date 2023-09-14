@@ -1,6 +1,7 @@
 package ru.practicum.ewm.controller.compilation;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.compilation.CompilationDto;
 import ru.practicum.ewm.mapper.CompilationMapper;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/compilations")
+@Validated
 public class PublicCompilationController {
     private final CompilationService service;
     private final CompilationMapper mapper;
@@ -28,7 +30,7 @@ public class PublicCompilationController {
     }
 
     @GetMapping("/{compId}")
-    public CompilationDto getById(@PathVariable long compId) {
+    public CompilationDto getById(@PathVariable @Positive long compId) {
         return mapper.toDto(service.getById(compId));
     }
 }

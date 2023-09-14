@@ -2,11 +2,14 @@ package ru.practicum.ewm.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -19,17 +22,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class,
+            MethodArgumentNotValidException.class,
+            MissingServletRequestParameterException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-            log.error("Ошибка валидации - {}: {}", fieldName, errorMessage);
-        });
-        return errors;
+    public ApiError handleValidationExceptions(RuntimeException ex) {
+        log.debug("Получен статус 400 Bad request {}", ex.getMessage(), ex);
+        return createErrorResponse(ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -45,13 +44,6 @@ public class ErrorHandler {
         log.debug("Получен статус 409 Conflict {}", ex.getMessage(), ex);
         return createErrorResponse(ex, HttpStatus.CONFLICT);
     }
-
-    /*@ExceptionHandler(IncorrectParameter.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleIncorrectParameterExceptions(final RuntimeException ex) {
-        log.debug("Получен статус 400 Bad request {}", ex.getMessage(), ex);
-        return createErrorResponse(ex, HttpStatus.BAD_REQUEST);
-    }*/
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -1,6 +1,7 @@
 package ru.practicum.ewm.controller.category;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.category.CategoryDto;
 import ru.practicum.ewm.mapper.CategoryMapper;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/categories")
+@Validated
 public class PublicCategoryController {
     private final CategoryService service;
     private final CategoryMapper mapper;
@@ -27,7 +29,7 @@ public class PublicCategoryController {
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto getById(@PathVariable long catId) {
+    public CategoryDto getById(@PathVariable @Positive long catId) {
         return mapper.toDto(service.getById(catId));
     }
 }

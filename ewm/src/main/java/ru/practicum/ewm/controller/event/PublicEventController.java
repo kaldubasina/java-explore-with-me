@@ -2,6 +2,7 @@ package ru.practicum.ewm.controller.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.event.EventFullDto;
 import ru.practicum.ewm.dto.event.EventShortDto;
@@ -22,6 +23,7 @@ import static ru.practicum.ewm.utils.Constant.DATE_TIME_FORMAT;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
+@Validated
 public class PublicEventController {
     private final EventService service;
     private final EventMapper mapper;
@@ -45,7 +47,7 @@ public class PublicEventController {
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getById(@PathVariable long eventId, HttpServletRequest request) {
+    public EventFullDto getById(@PathVariable @Positive long eventId, HttpServletRequest request) {
         return mapper.toFullDto(service.getByIdPublic(eventId, request));
     }
 }
