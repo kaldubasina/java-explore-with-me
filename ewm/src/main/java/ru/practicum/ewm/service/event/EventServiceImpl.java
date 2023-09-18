@@ -310,13 +310,10 @@ public class EventServiceImpl implements EventService {
     }
 
     private void sendStats(HttpServletRequest request) {
-
-        EndpointHit endpointHit = EndpointHit.builder()
-                .app(appName)
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
-                .timestamp(LocalDateTime.now())
-                .build();
+        EndpointHit endpointHit = new EndpointHit(appName,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now());
 
         statsClient.addStats(endpointHit);
     }

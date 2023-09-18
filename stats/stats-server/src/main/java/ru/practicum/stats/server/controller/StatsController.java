@@ -23,11 +23,12 @@ import static ru.practicum.stats.common.utils.Constant.DATE_TIME_FORMATTER;
 @RequiredArgsConstructor
 public class StatsController {
     private final StatsService service;
+    private final StatsMapper mapper;
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
     public Stats addStats(@RequestBody @Valid EndpointHit endpointHit) {
-        return service.add(StatsMapper.INSTANCE.toEntity(endpointHit));
+        return service.add(mapper.toEntity(endpointHit));
     }
 
     @GetMapping("/stats")
