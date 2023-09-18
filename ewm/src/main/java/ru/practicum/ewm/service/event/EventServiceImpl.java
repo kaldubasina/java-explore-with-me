@@ -27,7 +27,6 @@ import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.common.dto.EndpointHit;
 import ru.practicum.stats.common.dto.ViewStats;
 
-import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
