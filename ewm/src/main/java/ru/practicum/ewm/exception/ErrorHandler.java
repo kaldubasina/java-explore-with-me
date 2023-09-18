@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 public class ErrorHandler {
     @ExceptionHandler({MethodArgumentTypeMismatchException.class,
             MethodArgumentNotValidException.class,
-            MissingServletRequestParameterException.class})
+            MissingServletRequestParameterException.class,
+            IncorrectRangeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidationExceptions(RuntimeException ex) {
         log.debug("Получен статус 400 Bad request {}", ex.getMessage(), ex);
@@ -66,6 +67,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleThrowable(final Throwable ex) {
         log.debug("Внутренняя ошибка сервера 500 Internal Server Error {}", ex.getMessage(), ex);
+        ex.printStackTrace();
         return createErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

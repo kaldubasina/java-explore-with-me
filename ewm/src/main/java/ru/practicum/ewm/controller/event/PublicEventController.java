@@ -36,12 +36,12 @@ public class PublicEventController {
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_TIME_FORMAT) LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "false") boolean onlyAvailable,
-            @RequestParam(required = false) EventSort eventSort,
+            @RequestParam(required = false) EventSort sort,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10") @Positive Integer size,
             HttpServletRequest request) {
         return service.getAllPublic(
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, eventSort, from, size, request).stream()
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request).stream()
                 .map(mapper::toShortDto)
                 .collect(Collectors.toList());
     }

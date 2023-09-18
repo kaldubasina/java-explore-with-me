@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.model.Compilation;
 import ru.practicum.ewm.model.Event;
+import ru.practicum.ewm.model.Request;
+import ru.practicum.ewm.model.enums.State;
 import ru.practicum.ewm.model.enums.Status;
 import ru.practicum.ewm.repository.CompilationRepository;
 import ru.practicum.ewm.repository.EventRepository;
@@ -13,10 +15,11 @@ import ru.practicum.ewm.repository.RequestRepository;
 import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.common.dto.ViewStats;
 
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ru.practicum.ewm.utils.Constant.DATE_TIME_FORMATTER;
@@ -40,10 +43,17 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public Compilation add(Compilation compilation, List<Long> eventIds) {
+    public Compilation add(Compilation compilation, Set<Long> eventIds) {
         if (!eventIds.isEmpty()) {
-            Set<Event> events = new HashSet<>(eventRepository.findAllByIdIn(eventIds));
-            setToEventsConfirmedRequestsAndViews(events);
+            Set<Event> events = eventRepository.findAllByIdIn(eventIds);
+            Map<Long, Long> eventsViews = getViews(events);
+            Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
+
+            events.forEach(ev -> {
+                ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
+                ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
+            });
+
             compilation.setEvents(events);
         }
 
@@ -52,19 +62,26 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public Compilation update(Compilation compilation, List<Long> eventIds, Long compId) {
+    public Compilation update(Compilation compilation, Set<Long> eventIds, Long compId) {
         Compilation compForUpd = compilationRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException(String.format("Compilation with id %d not found", compId)));
-        if (!compilation.getTitle().equals(compForUpd.getTitle())) compForUpd.setTitle(compilation.getTitle());
+        if (compilation.getTitle() != null) compForUpd.setTitle(compilation.getTitle());
 
         if (compilation.getPinned() != null) compForUpd.setPinned(compilation.getPinned());
 
-        Set<Event> events = new HashSet<>();
         if (!eventIds.isEmpty()) {
-            events.addAll(eventRepository.findAllById(eventIds));
-            setToEventsConfirmedRequestsAndViews(events);
+            Set<Event> events = eventRepository.findAllByIdIn(eventIds);
+
+            Map<Long, Long> eventsViews = getViews(events);
+            Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
+
+            events.forEach(ev -> {
+                ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
+                ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
+            });
+
+            compForUpd.setEvents(events);
         }
-        compForUpd.setEvents(events);
 
         return compilationRepository.save(compForUpd);
     }
@@ -86,11 +103,18 @@ public class CompilationServiceImpl implements CompilationService {
         for (Compilation compilation : compilations) {
             Set<Event> events = compilation.getEvents();
             if (!events.isEmpty()) {
-                setToEventsConfirmedRequestsAndViews(events);
+                Map<Long, Long> eventsViews = getViews(events);
+                Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
+
+                events.forEach(ev -> {
+                    ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
+                    ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
+                });
                 compilation.setEvents(events);
             }
         }
-        return compilations;
+        return compilationRepository.findAllByPinned(
+                pinned, PageRequest.of(from / size, size));
     }
 
     @Override
@@ -100,34 +124,52 @@ public class CompilationServiceImpl implements CompilationService {
 
         Set<Event> events = compilation.getEvents();
         if (!events.isEmpty()) {
-            setToEventsConfirmedRequestsAndViews(events);
+            Map<Long, Long> eventsViews = getViews(events);
+            Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
+
+            events.forEach(ev -> {
+                ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
+                ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
+            });
             compilation.setEvents(events);
         }
 
         return compilation;
     }
 
-    private void setToEventsConfirmedRequestsAndViews(Set<Event> events) {
-        String start = URLEncoder.encode(LocalDateTime.MIN.format(DATE_TIME_FORMATTER), Charset.defaultCharset());
-        String end = URLEncoder.encode(LocalDateTime.now().format(DATE_TIME_FORMATTER), Charset.defaultCharset());
+    private Map<Long, Long> getViews(Set<Event> events) {
+        LocalDateTime earliestEvent = events.stream()
+                .filter(e -> e.getState().equals(State.PUBLISHED))
+                .map(Event::getPublishedOn)
+                .min(LocalDateTime::compareTo)
+                .orElse(LocalDateTime.of(2000, 1, 1, 0, 0));
+        String start = earliestEvent.format(DATE_TIME_FORMATTER);
+        String end = LocalDateTime.now().format(DATE_TIME_FORMATTER);
 
-        Set<String> uris = events.stream()
+        List<String> uris = events.stream()
                 .map(Event::getId)
-                .map(id -> "/event/" + id)
-                .collect(Collectors.toSet());
+                .map(id -> "/events/" + id)
+                .collect(Collectors.toList());
 
-        List<ViewStats> stats = statsClient.getStats(start, end, uris, false);//.getBody();
+        List<ViewStats> stats = statsClient.getStats(start, end, uris, true);
         Map<Long, Long> viewsById = new HashMap<>();
-        if (stats != null) {
-            for (ViewStats stat : stats) {
-                String[] uri = stat.getUri().split("/");
-                viewsById.merge(Long.parseLong(uri[uri.length - 1]), stat.getHits(), Long::sum);
-            }
-        }
 
-        for (Event event : events) {
-            event.setViews(viewsById.getOrDefault(event.getId(), 0L));
-            event.setConfirmedRequests(requestRepository.countByEventIdAndStatus(event.getId(), Status.CONFIRMED));
+        if (!stats.isEmpty()) {
+            stats.forEach(stat -> {
+                Long eventId = Long.parseLong(stat.getUri().split("/")[2]);
+                viewsById.put(eventId, stat.getHits());
+            });
         }
+        return viewsById;
+    }
+
+    private Map<Long, Integer> getConfirmedRequests(Set<Event> events) {
+        List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
+        List<Request> confirmedRequests = requestRepository.findByStatusAndEventIdIn(Status.CONFIRMED, eventIds);
+
+        return confirmedRequests.stream()
+                .collect(Collectors.groupingBy(request -> request.getEvent().getId()))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()));
     }
 }

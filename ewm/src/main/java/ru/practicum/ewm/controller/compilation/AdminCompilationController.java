@@ -24,14 +24,14 @@ public class AdminCompilationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto add(@RequestBody @Valid NewCompilationDto compilationDto) {
-        return mapper.toDto(service.add(mapper.toEntity(compilationDto), compilationDto.getEventIds()));
+        return mapper.toDto(service.add(mapper.toEntity(compilationDto), compilationDto.getEvents()));
     }
 
     @PatchMapping("/{compId}")
     public CompilationDto update(@RequestBody @Valid UpdateCompilationRequest compilationRequest,
                                  @PathVariable @Positive Long compId) {
         return mapper.toDto(service.update(mapper.toEntity(compilationRequest),
-                compilationRequest.getEventIds(),
+                compilationRequest.getEvents(),
                 compId));
     }
 

@@ -36,10 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category update(Category category, Long catId) {
         Category catForUpd = categoryRepository.findById(catId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id %d not found", catId)));
-        if (categoryRepository.existsByName(category.getName())) {
-            throw new AlreadyExistException(String.format("Category with name %s already exists", category.getName()));
-        }
-        if (!catForUpd.getName().equals(category.getName())) {
+        if (category.getName() != null) {
             catForUpd.setName(category.getName());
         }
         return categoryRepository.save(catForUpd);

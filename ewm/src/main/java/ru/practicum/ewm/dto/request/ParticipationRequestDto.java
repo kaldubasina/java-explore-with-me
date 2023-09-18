@@ -13,7 +13,7 @@ public class ParticipationRequestDto {
     private Long id;
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime created;
-    private Long eventId;
-    private Long requesterId;
+    private Long event;
+    private Long requester;
     private Status status;
 }

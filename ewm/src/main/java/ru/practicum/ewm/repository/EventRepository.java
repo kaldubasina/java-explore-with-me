@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
-    Set<Event> findAllByIdIn(List<Long> eventIds);
+    Set<Event> findAllByIdIn(Set<Long> eventIds);
 
     @Query("SELECT e FROM Event e " +
             "WHERE (COALESCE(:users, null) IS NULL OR e.initiator.id in :users) " +
@@ -26,8 +26,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e " +
             "WHERE e.state = 'PUBLISHED' " +
-            "AND (COALESCE(:text, null) IS NULL OR (lower(e.annotation) LIKE CONCAT('%', :text, '%') " +
-            "or lower(e.description) LIKE CONCAT('%', :text, '%'))) " +
+            "AND (COALESCE(:text, null) IS NULL OR (lower(e.annotation) LIKE lower(CONCAT('%', :text, '%')) " +
+            "OR lower(e.description) LIKE lower(CONCAT('%', :text, '%')))) " +
             "AND (COALESCE(:categories, null) IS NULL OR e.category.id in :categories) " +
             "AND (COALESCE(:paid, null) IS NULL OR e.paid = :paid) " +
             "AND e.eventDate >= :rangeStart " +

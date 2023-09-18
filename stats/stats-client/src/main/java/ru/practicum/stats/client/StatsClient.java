@@ -1,41 +1,52 @@
 package ru.practicum.stats.client;
 
-import org.springframework.http.*;
-import ru.practicum.stats.common.dto.EndpointHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.stats.common.dto.EndpointHit;
 import ru.practicum.stats.common.dto.ViewStats;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
-public class StatsClient extends BaseClient {
+public class StatsClient {
+
+    @Value("${stats-server.url}")
+    private String serverUrl;
+
+    private final RestTemplate restTemplate;
 
     @Autowired
     public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
-        super(builder
+        this.restTemplate = builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
-                .build());
+                .build();
     }
 
-    public ResponseEntity<Object> addStats(EndpointHit endpointHit) {
-        return post("/hit", endpointHit);
+    public void addStats(EndpointHit endpointHit) {
+        restTemplate.postForLocation("/hit", endpointHit);
     }
 
-    public List<ViewStats> getStats(String start, String end, Set<String> uris, boolean unique) {
-        Map<String, Object> parameters = Map.of(
+    public List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique) {
+        Map<String, Object> parameters = new HashMap<>(Map.of(
                 "start", start,
                 "end", end,
-                "uris", String.join(",", uris),
-                "unique", unique);
+                "unique", unique));
 
-        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
+        if (uris != null && !uris.isEmpty()) {
+            parameters.put("uris", String.join(",", uris));
+        }
+
+        ViewStats[] response = restTemplate.getForObject(
+                "/stats?start={start}&end={end}&uris={uris}&unique={unique}",
+                ViewStats[].class, parameters);
+        return Objects.isNull(response)
+                ? Collections.emptyList()
+                : List.of(response);
     }
 }
