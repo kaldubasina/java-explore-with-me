@@ -70,26 +70,25 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transient
+    @Transactional
     public Event updateAdmin(Long eventId, Event event) {
         Event eventForUpd = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id %d not found", eventId)));
 
         updateEvent(event, eventForUpd);
         if (event.getStateActionAdmin() != null) {
-            if (eventForUpd.getState().equals(State.PENDING)) {
-                if (event.getStateActionAdmin().equals(UpdateEventAdminRequest.StateAction.PUBLISH_EVENT)) {
-                    if (LocalDateTime.now().plusHours(1).isAfter(eventForUpd.getEventDate())) {
-                        throw new NotAvailableException(
-                                "Start of the event must be no earlier than one hour from the publication date");
-                    }
-                    eventForUpd.setState(State.PUBLISHED);
-                    eventForUpd.setPublishedOn(LocalDateTime.now());
-                } else if (event.getStateActionAdmin().equals(UpdateEventAdminRequest.StateAction.REJECT_EVENT)) {
-                    eventForUpd.setState(State.CANCELED);
-                }
-            } else {
+            if (!eventForUpd.getState().equals(State.PENDING)) {
                 throw new NotAvailableException("Event must be in PENDING status");
+            }
+            if (event.getStateActionAdmin().equals(UpdateEventAdminRequest.StateAction.PUBLISH_EVENT)) {
+                if (LocalDateTime.now().plusHours(1).isAfter(eventForUpd.getEventDate())) {
+                    throw new NotAvailableException(
+                            "Start of the event must be no earlier than one hour from the publication date");
+                }
+                eventForUpd.setState(State.PUBLISHED);
+                eventForUpd.setPublishedOn(LocalDateTime.now());
+            } else if (event.getStateActionAdmin().equals(UpdateEventAdminRequest.StateAction.REJECT_EVENT)) {
+                eventForUpd.setState(State.CANCELED);
             }
         }
         List<Event> events = List.of(eventRepository.save(eventForUpd));

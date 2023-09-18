@@ -46,17 +46,9 @@ public class CompilationServiceImpl implements CompilationService {
     public Compilation add(Compilation compilation, Set<Long> eventIds) {
         if (!eventIds.isEmpty()) {
             Set<Event> events = eventRepository.findAllByIdIn(eventIds);
-            Map<Long, Long> eventsViews = getViews(events);
-            Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
-
-            events.forEach(ev -> {
-                ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
-                ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
-            });
-
+            setViewsAndConfirmedRequest(events);
             compilation.setEvents(events);
         }
-
         return compilationRepository.save(compilation);
     }
 
@@ -71,18 +63,9 @@ public class CompilationServiceImpl implements CompilationService {
 
         if (!eventIds.isEmpty()) {
             Set<Event> events = eventRepository.findAllByIdIn(eventIds);
-
-            Map<Long, Long> eventsViews = getViews(events);
-            Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
-
-            events.forEach(ev -> {
-                ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
-                ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
-            });
-
+            setViewsAndConfirmedRequest(events);
             compForUpd.setEvents(events);
         }
-
         return compilationRepository.save(compForUpd);
     }
 
@@ -103,18 +86,11 @@ public class CompilationServiceImpl implements CompilationService {
         for (Compilation compilation : compilations) {
             Set<Event> events = compilation.getEvents();
             if (!events.isEmpty()) {
-                Map<Long, Long> eventsViews = getViews(events);
-                Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
-
-                events.forEach(ev -> {
-                    ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
-                    ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
-                });
+                setViewsAndConfirmedRequest(events);
                 compilation.setEvents(events);
             }
         }
-        return compilationRepository.findAllByPinned(
-                pinned, PageRequest.of(from / size, size));
+        return compilationRepository.findAllByPinned(pinned, PageRequest.of(from / size, size));
     }
 
     @Override
@@ -124,17 +100,20 @@ public class CompilationServiceImpl implements CompilationService {
 
         Set<Event> events = compilation.getEvents();
         if (!events.isEmpty()) {
-            Map<Long, Long> eventsViews = getViews(events);
-            Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
-
-            events.forEach(ev -> {
-                ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
-                ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
-            });
+            setViewsAndConfirmedRequest(events);
             compilation.setEvents(events);
         }
-
         return compilation;
+    }
+
+    private void setViewsAndConfirmedRequest(Set<Event> events) {
+        Map<Long, Long> eventsViews = getViews(events);
+        Map<Long, Integer> confirmedRequests = getConfirmedRequests(events);
+
+        events.forEach(ev -> {
+            ev.setViews(eventsViews.getOrDefault(ev.getId(), 0L));
+            ev.setConfirmedRequests(confirmedRequests.getOrDefault(ev.getId(), 0));
+        });
     }
 
     private Map<Long, Long> getViews(Set<Event> events) {
