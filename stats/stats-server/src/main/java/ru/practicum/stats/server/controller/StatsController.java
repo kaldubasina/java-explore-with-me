@@ -3,9 +3,11 @@ package ru.practicum.stats.server.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.stats.common.dto.EndpointHit;
 import ru.practicum.stats.common.dto.ViewStats;
 import ru.practicum.stats.server.mapper.StatsMapper;
+import ru.practicum.stats.server.model.Stats;
 import ru.practicum.stats.server.service.StatsService;
 
 import javax.validation.Valid;
@@ -24,8 +26,8 @@ public class StatsController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addStats(@RequestBody @Valid EndpointHit endpointHit) {
-        service.add(StatsMapper.INSTANCE.toEntity(endpointHit));
+    public Stats addStats(@RequestBody @Valid EndpointHit endpointHit) {
+        return service.add(StatsMapper.INSTANCE.toEntity(endpointHit));
     }
 
     @GetMapping("/stats")
@@ -38,6 +40,9 @@ public class StatsController {
                 URLDecoder.decode(start, Charset.defaultCharset()), DATE_TIME_FORMATTER);
         LocalDateTime endDate = LocalDateTime.parse(
                 URLDecoder.decode(end, Charset.defaultCharset()), DATE_TIME_FORMATTER);
+        if (startDate.isAfter(endDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start must be earlier than end");
+        }
         return service.getStats(startDate, endDate, uris, unique);
     }
 }

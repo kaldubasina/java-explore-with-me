@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Set;
 
 public interface StatsService {
-    void add(Stats stats);
+    Stats add(Stats stats);
 
     Collection<ViewStats> getStats(LocalDateTime start, LocalDateTime end, Set<String> uris, boolean unique);
 }
