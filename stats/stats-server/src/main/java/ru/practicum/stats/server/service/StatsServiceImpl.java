@@ -18,8 +18,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     @Transactional
-    public void add(Stats stats) {
+    public Stats add(Stats stats) {
         repository.save(stats);
+        return stats;
     }
 
     @Override

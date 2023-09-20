@@ -1,14 +1,5 @@
 version: '3.1'
 services:
-  stats-client:
-    build: stats/stats-client
-    depends_on:
-      - stats-server
-    ports:
-      - "8080:8080"
-    environment:
-      - STATS-SERVER-URL=http://stats-server:9090
-
   stats-server:
     build: stats/stats-server
     depends_on:
@@ -16,6 +7,7 @@ services:
     ports:
       - "9090:9090"
     environment:
+      - STATS-SERVER-URL=http://stats-server:9090
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - DB_NAME=stats
@@ -36,11 +28,11 @@ services:
   ewm-service:
     build: ewm
     ports:
-      - "8081:8081"
+      - "8080:8080"
     depends_on:
       - ewm-db
-      - stats-server
     environment:
+      - STATS-SERVER-URL=http://stats-server:9090
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - DB_NAME=ewm
