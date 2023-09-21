@@ -160,7 +160,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"new event annotation, new event annotation\",\r\n    \"category\": 1,\r\n    \"eventDate\": \"2023-11-11 11:22:33\",\r\n    \"description\": \"new event description, new event description\",\r\n    \"location\": {\r\n        \"lon\": 56.00,\r\n        \"lat\": 35.00\r\n    },\r\n    \"paid\": false,\r\n    \"title\": \"event title\",\r\n    \"participantLimit\": 0,\r\n    \"requestModeration\": false\r\n}",
+					"raw": "{\r\n    \"annotation\": \"new event annotation, new event annotation\",\r\n    \"category\": 120,\r\n    \"eventDate\": \"2023-11-11 11:22:33\",\r\n    \"description\": \"new event description, new event description\",\r\n    \"location\": {\r\n        \"lon\": 56.00,\r\n        \"lat\": 35.00\r\n    },\r\n    \"paid\": false,\r\n    \"title\": \"event title\",\r\n    \"participantLimit\": 0,\r\n    \"requestModeration\": false\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -168,7 +168,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/1/events",
+					"raw": "http://localhost:8080/users/135/events",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -176,7 +176,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"1",
+						"135",
 						"events"
 					]
 				}
@@ -213,7 +213,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/admin/events/1",
+					"raw": "http://localhost:8080/admin/events/106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -222,7 +222,7 @@
 					"path": [
 						"admin",
 						"events",
-						"1"
+						"106"
 					]
 				}
 			},
@@ -258,7 +258,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/2/requests?eventId=1",
+					"raw": "http://localhost:8080/users/136/requests?eventId=106",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -266,13 +266,13 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"2",
+						"136",
 						"requests"
 					],
 					"query": [
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "106"
 						}
 					]
 				}
@@ -309,7 +309,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/2/events/1/comments",
+					"raw": "http://localhost:8080/users/136/events/106/comments",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -317,9 +317,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"2",
+						"136",
 						"events",
-						"1",
+						"106",
 						"comments"
 					]
 				}
@@ -356,7 +356,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/1/events/1/comments",
+					"raw": "http://localhost:8080/users/135/events/106/comments",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -364,9 +364,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"1",
+						"135",
 						"events",
-						"1",
+						"106",
 						"comments"
 					]
 				}
@@ -401,7 +401,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/2/events/1/comments",
+					"raw": "http://localhost:8080/users/136/events/106/comments",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -409,9 +409,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"2",
+						"136",
 						"events",
-						"1",
+						"106",
 						"comments"
 					]
 				}
@@ -448,7 +448,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/2/events/1/comments/1",
+					"raw": "http://localhost:8080/users/136/events/106/comments/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -456,9 +456,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"2",
+						"136",
 						"events",
-						"1",
+						"106",
 						"comments",
 						"1"
 					]
@@ -487,7 +487,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/events/1/comments/1",
+					"raw": "http://localhost:8080/events/106/comments/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -495,7 +495,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"1",
+						"106",
 						"comments",
 						"1"
 					]
@@ -524,7 +524,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/events/1/comments",
+					"raw": "http://localhost:8080/events/106/comments",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -532,7 +532,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"1",
+						"106",
 						"comments"
 					]
 				}
@@ -558,7 +558,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/users/2/events/1/comments/1",
+					"raw": "http://localhost:8080/users/136/events/106/comments/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -566,9 +566,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"2",
+						"136",
 						"events",
-						"1",
+						"106",
 						"comments",
 						"1"
 					]
